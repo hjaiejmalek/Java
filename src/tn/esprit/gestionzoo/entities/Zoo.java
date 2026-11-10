@@ -1,19 +1,25 @@
 package tn.esprit.gestionzoo.entities;
 
+import java.util.Objects;
+
 public class Zoo {
-    static final int NBR_CAGES = 25;
+    public static final int NBR_CAGES = 25;
+    public static final int MAX_AQUATIC_ANIMALS = 10;
 
     private Animal[] animals;
+    private Aquatic[] aquaticAnimals;
     private String name;
     private String city;
     private int animalCount;
+    private int aquaticCount;
 
     public Zoo() {
         animals = new Animal[NBR_CAGES];
+        aquaticAnimals = new Aquatic[MAX_AQUATIC_ANIMALS];
     }
 
     public Zoo(String name, String city) {
-        animals = new Animal[NBR_CAGES];
+        this();
         setName(name);
         this.city = city;
     }
@@ -23,9 +29,11 @@ public class Zoo {
     }
 
     public void setName(String name) {
-        if (name != null && !name.isEmpty()) {
-            this.name = name;
+        if (name == null || name.trim().isEmpty()) {
+            System.out.println("Error: the zoo name must not be empty.");
+            return;
         }
+        this.name = name;
     }
 
     public String getCity() {
@@ -34,6 +42,14 @@ public class Zoo {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public int getAnimalCount() {
+        return animalCount;
+    }
+
+    public int getAquaticCount() {
+        return aquaticCount;
     }
 
     public void displayZoo() {
@@ -52,7 +68,7 @@ public class Zoo {
     }
 
     public boolean addAnimal(Animal animal) {
-        if (isZooFull() || searchAnimal(animal) != -1) {
+        if (animal == null || isZooFull() || searchAnimal(animal) != -1) {
             return false;
         }
         animals[animalCount] = animal;
@@ -68,7 +84,7 @@ public class Zoo {
 
     public int searchAnimal(Animal animal) {
         for (int i = 0; i < animalCount; i++) {
-            if (animals[i].getName().equals(animal.getName())) {
+            if (Objects.equals(animals[i].getName(), animal.getName())) {
                 return i;
             }
         }
@@ -83,6 +99,7 @@ public class Zoo {
         for (int i = index; i < animalCount - 1; i++) {
             animals[i] = animals[i + 1];
         }
+        animals[animalCount - 1] = null;
         animalCount--;
         return true;
     }
@@ -92,5 +109,62 @@ public class Zoo {
             return z1;
         }
         return z2;
+    }
+
+    public void addAquaticAnimal(Aquatic aquatic) {
+        if (aquatic == null) {
+            return;
+        }
+        if (aquaticCount >= MAX_AQUATIC_ANIMALS) {
+            System.out.println("Error: no more room for aquatic animals.");
+            return;
+        }
+        for (int i = 0; i < aquaticCount; i++) {
+            if (aquaticAnimals[i].equals(aquatic)) {
+                System.out.println("Error: " + aquatic.getName() + " is already in the zoo.");
+                return;
+            }
+        }
+        aquaticAnimals[aquaticCount] = aquatic;
+        aquaticCount++;
+    }
+
+    public void displayAquaticAnimals() {
+        for (int i = 0; i < aquaticCount; i++) {
+            System.out.println(aquaticAnimals[i]);
+        }
+    }
+
+    public void swimAll() {
+        for (int i = 0; i < aquaticCount; i++) {
+            aquaticAnimals[i].swim();
+        }
+    }
+
+    public float maxPenguinSwimmingDepth() {
+        float max = 0;
+        for (int i = 0; i < aquaticCount; i++) {
+            if (aquaticAnimals[i] instanceof Penguin) {
+                Penguin penguin = (Penguin) aquaticAnimals[i];
+                if (penguin.getSwimmingDepth() > max) {
+                    max = penguin.getSwimmingDepth();
+                }
+            }
+        }
+        return max;
+    }
+
+    public void displayNumberOfAquaticsByType() {
+        int nbrDolphins = 0;
+        int nbrPenguins = 0;
+        for (int i = 0; i < aquaticCount; i++) {
+            if (aquaticAnimals[i] instanceof Dolphin) {
+                nbrDolphins++;
+            } else if (aquaticAnimals[i] instanceof Penguin) {
+                nbrPenguins++;
+            }
+        }
+        System.out.println("Number of dolphins : " + nbrDolphins);
+        System.out.println("Number of penguins : " + nbrPenguins);
     }
 }
