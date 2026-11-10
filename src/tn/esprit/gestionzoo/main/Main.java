@@ -5,6 +5,7 @@ import tn.esprit.gestionzoo.entities.Zoo;
 
 public class Main {
     public static void main(String[] args) {
+        // Objects created with setters (attributes are private now)
         Animal lion = new Animal();
         lion.setFamily("Felidae");
         lion.setName("Simba");
@@ -15,31 +16,53 @@ public class Main {
         myZoo.setName("Belvedere");
         myZoo.setCity("Tunis");
 
+        // Objects created with parameterized constructors
         Animal tiger = new Animal("Felidae", "Shere Khan", 7, true);
         Zoo zoo2 = new Zoo("Friguia", "Hammamet");
 
+        // Display
         myZoo.displayZoo();
         System.out.println(myZoo);
-        System.out.println(myZoo.toString());
         System.out.println(lion);
 
-        System.out.println(myZoo.addAnimal(lion));
-        System.out.println(myZoo.addAnimal(tiger));
+        // Instruction 18: validation tests
+        System.out.println("\n--- Validation tests ---");
+        Animal badAnimal = new Animal("Canidae", "Rex", -3, true);   // negative age refused
+        System.out.println(badAnimal);
+        lion.setAge(-10);                                            // refused, age stays 5
+        System.out.println("Lion age: " + lion.getAge());
+        myZoo.setName("");                                           // refused, name stays Belvedere
+        System.out.println("Zoo name: " + myZoo.getName());
 
+        // Add / search
+        System.out.println("\n--- Add & search ---");
+        System.out.println("Add lion: " + myZoo.addAnimal(lion));
+        System.out.println("Add tiger: " + myZoo.addAnimal(tiger));
         myZoo.displayAnimals();
-        System.out.println(myZoo.searchAnimal(lion));
-        Animal lionCopy = new Animal("Felidae", "Simba", 5, true);
-        System.out.println(myZoo.searchAnimal(lionCopy));
+        System.out.println("Index of lion: " + myZoo.searchAnimal(lion));
 
-        System.out.println(myZoo.addAnimal(lionCopy));
+        Animal lionCopy = new Animal("Felidae", "Simba", 5, true);
+        System.out.println("Index of lion copy: " + myZoo.searchAnimal(lionCopy));
+        System.out.println("Add lion copy (duplicate): " + myZoo.addAnimal(lionCopy));
+
+        // Instruction 17: fill the zoo, addAnimal stops at 25
+        System.out.println("\n--- Fill the zoo ---");
         for (int i = 1; i <= 30; i++) {
             myZoo.addAnimal(new Animal("Family" + i, "Animal" + i, i, true));
         }
+        System.out.println("Animal count: " + myZoo.getAnimalCount());
+        System.out.println("Zoo full? " + myZoo.isZooFull());
+        System.out.println("Add when full: " + myZoo.addAnimal(new Animal("X", "Extra", 1, false)));
 
-        System.out.println(myZoo.removeAnimal(tiger));
-        System.out.println(myZoo.isZooFull());
+        // Remove
+        System.out.println("\n--- Remove ---");
+        System.out.println("Remove tiger: " + myZoo.removeAnimal(tiger));
+        System.out.println("Animal count: " + myZoo.getAnimalCount());
+        System.out.println("Zoo full? " + myZoo.isZooFull());
 
+        // Compare
+        System.out.println("\n--- Compare ---");
         zoo2.addAnimal(tiger);
-        System.out.println(Zoo.compareZoo(myZoo, zoo2).getName());
+        System.out.println("Zoo with most animals: " + Zoo.compareZoo(myZoo, zoo2).getName());
     }
 }
